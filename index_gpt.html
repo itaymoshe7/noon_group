@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course Management System</title>
+
+  <!-- Inter Font -->
+  <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#2563eb',
+            secondary: '#64748b',
+            accent: '#10b981',
+            background: '#f8fafc',
+            text: '#1e293b'
+          },
+          borderRadius: {
+            lg: '8px'
+          },
+          transitionTimingFunction: {
+            smooth: 'cubic-bezier(0.4, 0, 0.2, 1)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; }
+  </style>
+</head>
+
+<body class="bg-background text-text dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300">
+
+<!-- Header -->
+<header class="bg-white dark:bg-slate-800 shadow-sm px-6 py-4 flex justify-between items-center">
+  <h1 class="text-xl font-semibold">Course Management System</h1>
+  <button onclick="toggleDarkMode()" class="px-4 py-2 rounded-lg bg-secondary text-white transition hover:opacity-90">
+    Toggle Dark Mode
+  </button>
+</header>
+
+<!-- Main Layout -->
+<main class="p-6 grid grid-cols-12 gap-6">
+
+  <!-- Dashboard Metrics -->
+  <section class="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
+      <p class="text-secondary">Total Students</p>
+      <h2 class="text-3xl font-semibold mt-2">1,248</h2>
+    </div>
+    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
+      <p class="text-secondary">Active Courses</p>
+      <h2 class="text-3xl font-semibold mt-2">32</h2>
+    </div>
+    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
+      <p class="text-secondary">Completion Rate</p>
+      <h2 class="text-3xl font-semibold mt-2">86%</h2>
+    </div>
+  </section>
+
+  <!-- Analytics -->
+  <section class="col-span-12 lg:col-span-8 bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
+    <h3 class="font-semibold mb-4">Enrollments Overview</h3>
+    <canvas id="chart"></canvas>
+  </section>
+
+  <!-- Activity Feed -->
+  <section class="col-span-12 lg:col-span-4 bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
+    <h3 class="font-semibold mb-4">Recent Activity</h3>
+    <ul class="space-y-4">
+      <li class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">A</div>
+        <span class="text-sm">Alice enrolled in React Basics</span>
+      </li>
+      <li class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center">J</div>
+        <span class="text-sm">John completed UI Design</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Courses -->
+  <section class="col-span-12">
+    <h3 class="font-semibold mb-4">Courses</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm hover:shadow-md transition">
+        <img src="https://picsum.photos/400/200" class="rounded-t-lg" alt="">
+        <div class="p-4">
+          <h4 class="font-semibold">React Fundamentals</h4>
+          <div class="mt-3 h-2 bg-slate-200 rounded">
+            <div class="h-full bg-accent rounded" style="width:70%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm hover:shadow-md transition">
+        <img src="https://picsum.photos/401/200" class="rounded-t-lg" alt="">
+        <div class="p-4">
+          <h4 class="font-semibold">Advanced CSS</h4>
+          <div class="mt-3 h-2 bg-slate-200 rounded">
+            <div class="h-full bg-accent rounded" style="width:45%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Students Table -->
+  <section class="col-span-12 bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
+    <h3 class="font-semibold mb-4">Students</h3>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="text-left text-secondary">
+          <tr>
+            <th class="py-2">Name</th>
+            <th>Status</th>
+            <th>Course</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-t">
+            <td class="py-2">Alice Johnson</td>
+            <td><span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">Active</span></td>
+            <td>React Fundamentals</td>
+          </tr>
+          <tr class="border-t">
+            <td class="py-2">Mark Smith</td>
+            <td><span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700">Pending</span></td>
+            <td>Advanced CSS</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 right-6 hidden bg-primary text-white px-4 py-3 rounded-lg shadow-lg">
+  Action completed successfully
+</div>
+
+<script>
+  // Dark mode
+  function toggleDarkMode() {
+    document.documentElement.classList.toggle('dark');
+    showToast();
+  }
+
+  // Toast
+  function showToast() {
+    const toast = document.getElementById('toast');
+    toast.classList.remove('hidden');
+    setTimeout(() => toast.classList.add('hidden'), 2500);
+  }
+
+  // Chart
+  new Chart(document.getElementById('chart'), {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+      datasets: [{
+        data: [120, 190, 300, 250, 320],
+        borderColor: '#2563eb',
+        backgroundColor: 'rgba(37,99,235,0.1)',
+        tension: 0.4,
+        fill: true
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { grid: { color: '#e5e7eb' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
