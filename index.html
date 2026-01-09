@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Management System</title>
+    <!-- Include Tailwind CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .bg-primary, .text-accent {
+            --tw-gradient-to: to #2563eb, to #10b981;
+        }
+        /* Responsive grid and spacing */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="flex justify-between items-center py-4 bg-primary text-white shadow-md mb-8">
+            <h1 class="text-2xl font-bold">Course Management System</h1>
+            <div class="flex space-x-4">
+                <button class="bg-accent hover:bg-accent-dark text-sm font-medium rounded px-4 py-2">Log Out</button>
+                <button class="bg-accent hover:bg-accent-dark text-sm font-medium rounded px-4 py-2">Settings</button>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main>
+            <section class="flex flex-wrap justify-between mb-8">
+                <!-- Metrics Card Example -->
+                <div class="bg-white shadow-md p-6 rounded-lg w-full sm:w-1/3">
+                    <h2 class="text-xl font-semibold mb-4">Enrollment Statistics</h2>
+                    <p class="text-sm mb-4">Total Students: 500</p>
+                    <p class="text-sm mb-4">Active Courses: 70</p>
+                </div>
+
+                <!-- Chart Example -->
+                <div class="bg-white shadow-md p-6 rounded-lg w-full sm:w-1/3">
+                    <h2 class="text-xl font-semibold mb-4">Course Progress</h2>
+                    <canvas id="courseProgressChart" width="400" height="200"></canvas>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white shadow-md p-6 rounded-lg w-full sm:w-1/3">
+                    <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
+                    <ul class="space-y-2">
+                        <li>
+                            <img src="avatar1.jpg" alt="Avatar 1" class="w-8 h-8 rounded-full mr-2">
+                            <span class="font-medium">John Doe</span> enrolled in "Advanced Python"
+                        </li>
+                        <!-- More activity items -->
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Courses Section -->
+            <section class="mb-8">
+                <h2 class="text-xl font-semibold mb-4">Courses</h2>
+                <!-- Course cards example -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-white shadow-md p-6 rounded-lg cursor-pointer hover:shadow-lg">
+                        <img src="course1.jpg" alt="Course 1" class="w-full h-[200px] object-cover mb-4">
+                        <h3 class="text-lg font-semibold">Introduction to React</h3>
+                        <p class="text-sm text-gray-500">Author: Jane Smith</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">Active</span>
+                            <button class="text-sm font-medium rounded px-3 py-1 bg-accent hover:bg-accent-dark">View Details</button>
+                        </div>
+                    </div>
+                    <!-- More courses -->
+                </div>
+            </section>
+
+            <!-- Students Section -->
+            <section>
+                <h2 class="text-xl font-semibold mb-4">Students</h2>
+                <!-- Student data table example -->
+                <table class="w-full border-collapse text-center">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Enrollment Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Jane Smith</td>
+                            <td>01/05/2023</td>
+                            <td><span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">Enrolled</span></td>
+                            <td><button class="text-sm font-medium rounded px-3 py-1 bg-accent hover:bg-accent-dark">View Profile</button></td>
+                        </tr>
+                        <!-- More students -->
+                    </tbody>
+                </table>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="py-4 text-center bg-primary text-white">
+            &copy; 2023 Course Management System
+        </footer>
+    </div>
+
+    <!-- ChartJS for Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
