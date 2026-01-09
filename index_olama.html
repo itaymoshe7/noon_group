@@ -1,21 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <title>EduManage – Modern Course Management System</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Inter font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Toastify styles -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-  <!-- Quill rich‑text editor -->
-  <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
-  <!-- Tailwind CSS (via CDN) -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Axiom LMS – Course Management Platform</title>
+
+  <!-- Inter Font -->
+  <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
+
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <script>
-    // Tailwind configuration – custom palette, dark mode, radius & spacing
     tailwind.config = {
       darkMode: 'class',
       theme: {
@@ -25,899 +24,205 @@
             secondary: '#64748b',
             accent: '#10b981',
             background: '#f8fafc',
-            text: '#1e293b',
-            success: '#10b981',
-            danger: '#ef4444',
-            warning: '#f59e0b',
-            info: '#3b82f6',
+            text: '#1e293b'
           },
-          borderRadius: {
-            lg: '8px',
-          },
-          spacing: {
-            2: '8px',
-            4: '16px',
-            6: '24px',
-            8: '32px',
-            10: '40px',
-            12: '48px',
-          },
-          transitionTimingFunction: {
-            'inout': 'ease-in-out',
-          },
-        },
-      },
-    };
+          borderRadius: { lg: '8px' }
+        }
+      }
+    }
   </script>
+
   <style>
-    body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; }
-    .bg-card { background-color: #ffffff; }
-    .dark .bg-card { background-color: #1e293b; }
-    .skeleton {
-      background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
-      background-size: 200% 100%;
-      animation: loading 1.5s infinite;
-      border-radius: 8px;
-    }
-    .dark .skeleton {
-      background: linear-gradient(90deg, #2d3748 25%, #4a5568 50%, #2d3748 75%);
-    }
-    @keyframes loading {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-    .btn-primary {
-      @apply bg-primary text-white py-2 px-4 rounded-lg transition-colors duration-300;
-    }
-    .btn-primary:hover { opacity: .9; }
-    .btn-outline {
-      @apply border border-border text-text py-2 px-4 rounded-lg transition-colors duration-300;
-    }
-    .dark .btn-outline { @apply border-dark-border text-dark-text; }
-    .btn-outline:hover { @apply bg-border text-text; }
-    .dark .btn-outline:hover { @apply bg-dark-border text-dark-text; }
-    .status-badge { @apply px-2 py-1 rounded-full text-xs font-medium; }
-    .status-active { @apply bg-success/10 text-success; }
-    .status-pending { @apply bg-warning/10 text-warning; }
-    .status-inactive { @apply bg-secondary/10 text-secondary; }
+    body { font-family: Inter, system-ui, sans-serif; }
   </style>
 </head>
-<body class="bg-background text-text">
 
-<div id="root"></div>
+<body class="bg-background text-text dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300">
 
-<!-- Core libraries -->
-<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<!-- Header -->
+<header class="sticky top-0 z-40 bg-white dark:bg-slate-800 shadow-sm px-8 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-xl font-semibold">Axiom LMS</h1>
+    <p class="text-sm text-secondary">Enterprise Course Management</p>
+  </div>
+  <div class="flex items-center gap-4">
+    <button onclick="toggleDarkMode()" class="px-4 py-2 rounded-lg bg-secondary text-white hover:opacity-90 transition">
+      Dark Mode
+    </button>
+    <div class="relative">
+      <span class="absolute -top-1 -right-1 w-4 h-4 text-xs bg-accent text-white rounded-full flex items-center justify-center">3</span>
+      🔔
+    </div>
+  </div>
+</header>
 
-<!-- Additional libs -->
-<script src="https://unpkg.com/react-query@3.39.2/dist/react-query.development.js"></script>
-<script src="https://unpkg.com/react-hook-form@7.45.1/dist/react-hook-form.umd.js"></script>
-<script src="https://unpkg.com/framer-motion@10.12.7/dist/framer-motion.umd.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-<script src="https://unpkg.com/i18next@21.9.1/dist/umd/i18next.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-<script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+<!-- Main -->
+<main class="p-8 space-y-10">
 
-<!-- Application code (React + TypeScript via Babel) -->
-<script type="text/babel" data-presets="react,typescript">
+  <!-- Metrics -->
+  <section class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
+      <p class="text-secondary">Total Students</p>
+      <h2 class="text-3xl font-semibold mt-2">2,483</h2>
+      <p class="text-sm text-accent mt-2">+8.2% this month</p>
+    </div>
+    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
+      <p class="text-secondary">Active Courses</p>
+      <h2 class="text-3xl font-semibold mt-2">46</h2>
+      <p class="text-sm text-accent mt-2">+3 new courses</p>
+    </div>
+    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
+      <p class="text-secondary">Completion Rate</p>
+      <h2 class="text-3xl font-semibold mt-2">84%</h2>
+      <p class="text-sm text-secondary mt-2">Industry avg: 72%</p>
+    </div>
+    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
+      <p class="text-secondary">Monthly Revenue</p>
+      <h2 class="text-3xl font-semibold mt-2">$128,400</h2>
+      <p class="text-sm text-accent mt-2">↑ steady growth</p>
+    </div>
+  </section>
 
-/* --------------------------------------------------------------------
-   Translation resources (English / Spanish)
---------------------------------------------------------------------- */
-const en = {
-  appName: "EduManage",
-  dashboard: "Dashboard",
-  courses: "Courses",
-  students: "Students",
-  content: "Content",
-  analytics: "Analytics",
-  settings: "Settings",
-  logout: "Logout",
-  searchPlaceholder: "Search courses, students, content...",
-  notifications: "Notifications",
-  toggleDarkMode: "Toggle dark mode",
-  languageSelection: "Select language",
-  helloUser: "Hello, John!",
-  viewAll: "View All",
-  search: "Search",
-  metrics: {
-    totalCourses: "Total Courses",
-    activeStudents: "Active Students",
-    completionRate: "Completion Rate",
-    avgRating: "Avg. Rating",
-  },
-  charts: { enrollments: "New Enrollments" },
-  dashboardSection: {
-    enrollmentTrends: "Enrollment Trends",
-    recentActivity: "Recent Activity",
-  },
-  activity: {
-    completed: "completed",
-    enrolled: "enrolled in",
-    submitted: "submitted assignment for",
-    started: "started",
-  },
-  time: {
-    hoursAgo: "hours ago",
-    yesterday: "Yesterday",
-    daysAgo: "days ago",
-  },
-  error: {
-    title: "Something went wrong",
-    message: "An unexpected error has occurred.",
-    reload: "Reload Page",
-  },
-  courses: {
-    instructor: "Instructor",
-    duration: "Duration",
-    progress: "Progress",
-    details: "Details",
-    continue: "Continue",
-    reordered: "Courses reordered successfully!",
-    dragHandle: "Drag to reorder",
-  },
-  students: {
-    title: "Student Management",
-    export: "Export CSV",
-    exported: "Exported students data",
-    id: "ID",
-    name: "Name",
-    email: "Email",
-    courses: "Courses",
-    status: "Status",
-    lastActive: "Last Active",
-    noMore: "No more students to load",
-  },
-  content: {
-    title: "Content Management",
-    editorPlaceholder: "Start writing your course content...",
-    dragDrop: "Drag & drop files here",
-    or: "or",
-  },
-  analytics: {
-    title: "Course Performance",
-    averageScore: "Average Score",
-  },
-};
+  <!-- Analytics + Activity -->
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
+      <h3 class="font-semibold mb-4">Student Enrollment Trends</h3>
+      <canvas id="enrollmentChart"></canvas>
+    </div>
 
-const es = {
-  appName: "EduAdmin",
-  dashboard: "Tablero",
-  courses: "Cursos",
-  students: "Estudiantes",
-  content: "Contenido",
-  analytics: "Analítica",
-  settings: "Configuración",
-  logout: "Cerrar sesión",
-  searchPlaceholder: "Buscar cursos, estudiantes, contenido...",
-  notifications: "Notificaciones",
-  toggleDarkMode: "Alternar modo oscuro",
-  languageSelection: "Seleccionar idioma",
-  helloUser: "¡Hola, John!",
-  viewAll: "Ver todo",
-  search: "Buscar",
-  metrics: {
-    totalCourses: "Cursos totales",
-    activeStudents: "Estudiantes activos",
-    completionRate: "Tasa de finalización",
-    avgRating: "Calificación promedio",
-  },
-  charts: { enrollments: "Nuevas inscripciones" },
-  dashboardSection: {
-    enrollmentTrends: "Tendencias de inscripción",
-    recentActivity: "Actividad reciente",
-  },
-  activity: {
-    completed: "completó",
-    enrolled: "se inscribió en",
-    submitted: "envió la tarea de",
-    started: "comenzó",
-  },
-  time: {
-    hoursAgo: "hace horas",
-    yesterday: "Ayer",
-    daysAgo: "hace días",
-  },
-  error: {
-    title: "Algo salió mal",
-    message: "Se ha producido un error inesperado.",
-    reload: "Recargar página",
-  },
-  courses: {
-    instructor: "Instructor",
-    duration: "Duración",
-    progress: "Progreso",
-    details: "Detalles",
-    continue: "Continuar",
-    reordered: "¡Cursos reordenados con éxito!",
-    dragHandle: "Arrastrar para reordenar",
-  },
-  students: {
-    title: "Gestión de Estudiantes",
-    export: "Exportar CSV",
-    exported: "Datos de estudiantes exportados",
-    id: "ID",
-    name: "Nombre",
-    email: "Correo",
-    courses: "Cursos",
-    status: "Estado",
-    lastActive: "Última actividad",
-    noMore: "No hay más estudiantes para cargar",
-  },
-  content: {
-    title: "Gestión de Contenido",
-    editorPlaceholder: "Escribe aquí el contenido del curso...",
-    dragDrop: "Arrastra y suelta archivos aquí",
-    or: "o",
-  },
-  analytics: {
-    title: "Rendimiento del Curso",
-    averageScore: "Puntuación Media",
-  },
-};
-
-/* --------------------------------------------------------------------
-   Global utilities – Context, Types, Hooks, Toast wrapper
---------------------------------------------------------------------- */
-const UserContext = React.createContext(null);
-
-/** Toast helper */
-function toast(message, type = "info") {
-  Toastify({
-    text: message,
-    duration: 3000,
-    gravity: "top",
-    position: "right",
-    backgroundColor: type === "error" ? "#ef4444" : "#2563eb",
-    stopOnFocus: true,
-  }).showToast();
-}
-
-/* --------------------------------------------------------------------
-   Error Boundary
---------------------------------------------------------------------- */
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-  componentDidCatch(error, info) {
-    console.error("ErrorBoundary caught:", error, info);
-  }
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">{i18next.t('error.title')}</h2>
-          <p className="mb-4">{i18next.t('error.message')}</p>
-          <button className="btn-primary" onClick={() => window.location.reload()}>
-            {i18next.t('error.reload')}
-          </button>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
-
-/* --------------------------------------------------------------------
-   TopBar (search, dark mode, language, notifications, user avatar)
---------------------------------------------------------------------- */
-function TopBar({ darkMode, toggleDark, language, setLanguage, notifications }) {
-  const t = i18next.t;
-  return (
-    <header className="flex items-center justify-between bg-white dark:bg-dark-card p-4 shadow border-b border-border dark:border-dark-border">
-      <div className="flex-1">
-        <input
-          type="search"
-          placeholder={t('searchPlaceholder')}
-          className="ml-2 p-2 border rounded w-64 focus:outline-none focus:border-primary transition-colors"
-          aria-label={t('search')}
-        />
-      </div>
-      <div className="flex items-center space-x-4">
-        <button className="relative text-gray-600 dark:text-gray-300 hover:text-primary transition-colors" aria-label={t('notifications')}>
-          <i className="fas fa-bell"></i>
-          {notifications > 0 && (
-            <span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-              {notifications}
-            </span>
-          )}
-        </button>
-        <button onClick={toggleDark} className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors" aria-label={t('toggleDarkMode')}>
-          <i className={darkMode ? "fas fa-sun" : "fas fa-moon"}></i>
-        </button>
-        <select
-          value={language}
-          onChange={e => setLanguage(e.target.value)}
-          className="bg-white dark:bg-dark-card border border-border dark:border-dark-border rounded p-1"
-          aria-label={t('languageSelection')}
-        >
-          <option value="en">EN</option>
-          <option value="es">ES</option>
-        </select>
-        <div className="flex items-center space-x-2">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center font-semibold text-white">
-            JD
-          </div>
-          <span className="text-sm font-medium">{t('helloUser')}</span>
-        </div>
-      </div>
-    </header>
-  );
-}
-
-/* --------------------------------------------------------------------
-   Sidebar navigation (role‑based)
---------------------------------------------------------------------- */
-function Sidebar({ current, setSection }) {
-  const t = i18next.t;
-  const user = React.useContext(UserContext);
-  const nav = [
-    { id: "dashboard", label: t('dashboard'), icon: "fa-home", roles: ["admin", "instructor", "student"] },
-    { id: "courses", label: t('courses'), icon: "fa-book", roles: ["admin", "instructor"] },
-    { id: "students", label: t('students'), icon: "fa-users", roles: ["admin", "instructor"] },
-    { id: "content", label: t('content'), icon: "fa-file-alt", roles: ["admin", "instructor"] },
-    { id: "analytics", label: t('analytics'), icon: "fa-chart-line", roles: ["admin"] },
-    { id: "settings", label: t('settings'), icon: "fa-cog", roles: ["admin", "instructor", "student"] },
-  ];
-  return (
-    <aside className="w-64 bg-primary text-white flex flex-col p-4" role="navigation">
-      <div className="text-2xl font-bold mb-8">{t('appName')}</div>
-      <ul className="flex-1 space-y-2">
-        {nav.filter(item => item.roles.includes(user?.role)).map(item => (
-          <li key={item.id}>
-            <button
-              onClick={() => setSection(item.id)}
-              className={`flex items-center w-full p-2 rounded transition-colors ${
-                current === item.id ? "bg-white text-primary" : "hover:bg-white/20"
-              }`}
-            >
-              <i className={`fas ${item.icon} mr-2`}></i>
-              {item.label}
-            </button>
-          </li>
-        ))}
+    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
+      <h3 class="font-semibold mb-4">Recent Activity</h3>
+      <ul class="space-y-4 text-sm">
+        <li>👩‍💻 Sarah Lee enrolled in <strong>Advanced React</strong></li>
+        <li>✅ Michael Chen completed <strong>UX Research Fundamentals</strong></li>
+        <li>📁 New lesson added to <strong>Node.js Mastery</strong></li>
+        <li>⭐ Course <strong>AI for Designers</strong> rated 4.9</li>
       </ul>
-      <button className="w-full text-left p-2 rounded hover:bg-white/20 transition-colors">
-        <i className="fas fa-sign-out-alt mr-2"></i>{t('logout')}
+    </div>
+  </section>
+
+  <!-- Courses -->
+  <section>
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-semibold">Course Library</h3>
+      <button class="px-4 py-2 rounded-lg bg-primary text-white hover:bg-blue-700 transition">
+        + Create Course
       </button>
-    </aside>
-  );
-}
+    </div>
 
-/* --------------------------------------------------------------------
-   Dashboard – metric cards, enrollment chart, recent activity
---------------------------------------------------------------------- */
-function Dashboard() {
-  const t = i18next.t;
-  const chartRef = React.useRef(null);
-
-  const metrics = [
-    {
-      id: "totalCourses",
-      title: t('metrics.totalCourses'),
-      value: 42,
-      change: "+12%",
-      icon: "fa-book-open",
-      bgClass: "bg-blue-100/20 text-primary",
-      trend: "positive",
-    },
-    {
-      id: "activeStudents",
-      title: t('metrics.activeStudents'),
-      value: 1248,
-      change: "+8%",
-      icon: "fa-user-graduate",
-      bgClass: "bg-green-100/20 text-accent",
-      trend: "positive",
-    },
-    {
-      id: "completionRate",
-      title: t('metrics.completionRate'),
-      value: "78%",
-      change: "-3%",
-      icon: "fa-percentage",
-      bgClass: "bg-orange-100/20 text-warning",
-      trend: "negative",
-    },
-    {
-      id: "avgRating",
-      title: t('metrics.avgRating'),
-      value: "4.7",
-      change: "+0.2",
-      icon: "fa-star",
-      bgClass: "bg-red-100/20 text-danger",
-      trend: "positive",
-    },
-  ];
-
-  // Chart.js – Enrollment trend
-  React.useEffect(() => {
-    if (!chartRef.current) return;
-    const ctx = chartRef.current.getContext('2d');
-    const chart = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-        datasets: [{
-          label: t('charts.enrollments'),
-          data: [120,190,150,220,180,250,210,280,230,300,270,320],
-          borderColor: "#2563eb",
-          backgroundColor: "rgba(37,99,235,0.1)",
-          tension: .3,
-          fill: true,
-          pointRadius: 4,
-          pointHoverRadius: 6,
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: "rgba(30,41,59,0.9)",
-            titleColor: "#f8fafc",
-            bodyColor: "#f8fafc",
-            borderRadius: 8,
-            displayColors: false,
-          },
-        },
-        scales: {
-          y: { beginAtZero: true, grid: { color: "rgba(0,0,0,0.05)" }, ticks: { color: "#64748b" } },
-          x: { grid: { display: false }, ticks: { color: "#64748b" } },
-        },
-      },
-    });
-    return () => chart.destroy();
-  }, []);
-
-  return (
-    <motion.div className="grid grid-cols-12 gap-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      {metrics.map(m => (
-        <div key={m.id} className="col-span-12 md:col-span-3">
-          <div className="bg-card dark:bg-dark-card p-4 rounded-lg shadow transition-colors">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-sm text-secondary font-medium">{m.title}</h3>
-              <div className={`w-10 h-10 flex items-center justify-center rounded ${m.bgClass}`}>
-                <i className={`fas ${m.icon}`}></i>
-              </div>
-            </div>
-            <div className="text-2xl font-bold text-text">{m.value}</div>
-            <div className={`flex items-center ${m.trend === "positive" ? "text-success" : "text-danger"} mt-1`}>
-              <i className={`fas ${m.trend === "positive" ? "fa-arrow-up" : "fa-arrow-down"} mr-1`}></i>
-              {m.change}
-            </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Course Card -->
+      <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm hover:shadow-md transition">
+        <img src="https://picsum.photos/seed/react/400/200" class="rounded-t-lg" alt="">
+        <div class="p-4 space-y-2">
+          <h4 class="font-semibold">Advanced React</h4>
+          <p class="text-sm text-secondary">Instructor: James Walker</p>
+          <div class="h-2 bg-slate-200 rounded">
+            <div class="h-full bg-accent rounded" style="width: 72%"></div>
           </div>
-        </div>
-      ))}
-
-      {/* Enrollment chart */}
-      <div className="col-span-12 md:col-span-8 h-80">
-        <div className="bg-card dark:bg-dark-card p-4 rounded-lg shadow h-full flex flex-col">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold">{t('dashboardSection.enrollmentTrends')}</h3>
-            <a href="#" className="text-primary text-sm">{t('viewAll')}</a>
-          </div>
-          <canvas ref={chartRef} className="flex-1"></canvas>
         </div>
       </div>
 
-      {/* Recent activity */}
-      <div className="col-span-12 md:col-span-4 h-80">
-        <div className="bg-card dark:bg-dark-card p-4 rounded-lg shadow h-full overflow-auto">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold">{t('dashboardSection.recentActivity')}</h3>
-            <a href="#" className="text-primary text-sm">{t('viewAll')}</a>
+      <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm hover:shadow-md transition">
+        <img src="https://picsum.photos/seed/node/400/200" class="rounded-t-lg" alt="">
+        <div class="p-4 space-y-2">
+          <h4 class="font-semibold">Node.js Mastery</h4>
+          <p class="text-sm text-secondary">Instructor: Elena Torres</p>
+          <div class="h-2 bg-slate-200 rounded">
+            <div class="h-full bg-accent rounded" style="width: 54%"></div>
           </div>
-          <ul className="space-y-3">
-            <li className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center text-white mr-3 font-medium">AS</div>
-              <div>
-                <p className="text-sm"><strong>Alex Smith</strong> {t('activity.completed')} "Advanced React"</p>
-                <p className="text-xs text-secondary">2 {t('time.hoursAgo')}</p>
-              </div>
-            </li>
-            <li className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center text-white mr-3 font-medium">MJ</div>
-              <div>
-                <p className="text-sm"><strong>Maria Johnson</strong> {t('activity.enrolled')} "Data Science Fundamentals"</p>
-                <p className="text-xs text-secondary">5 {t('time.hoursAgo')}</p>
-              </div>
-            </li>
-            <li className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center text-white mr-3 font-medium">TP</div>
-              <div>
-                <p className="text-sm"><strong>Thomas Parker</strong> {t('activity.submitted')} "UX Design"</p>
-                <p className="text-xs text-secondary">{t('time.yesterday')}</p>
-              </div>
-            </li>
-            <li className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center text-white mr-3 font-medium">EK</div>
-              <div>
-                <p className="text-sm"><strong>Emma King</strong> {t('activity.started')} "Machine Learning Basics"</p>
-                <p className="text-xs text-secondary">2 {t('time.daysAgo')}</p>
-              </div>
-            </li>
-          </ul>
         </div>
       </div>
-    </motion.div>
-  );
-}
 
-/* --------------------------------------------------------------------
-   Course Management – cards, progress, drag‑and‑drop, bulk actions
---------------------------------------------------------------------- */
-function Courses() {
-  const t = i18next.t;
-  const [courses, setCourses] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const containerRef = React.useRef(null);
-
-  // Mock fetch
-  React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      const mock = [
-        { id: 1, title: "Advanced UI/UX Design Principles", instructor: "Sarah Johnson", duration: "8 weeks", progress: 75 },
-        { id: 2, title: "Full Stack Web Development", instructor: "Michael Chen", duration: "12 weeks", progress: 42 },
-        { id: 3, title: "Data Science with Python", instructor: "David Wilson", duration: "10 weeks", progress: 90 },
-        { id: 4, title: "Introduction to Machine Learning", instructor: "Anna Lee", duration: "9 weeks", progress: 20 },
-        { id: 5, title: "React Native Mobile Development", instructor: "James Smith", duration: "6 weeks", progress: 55 },
-      ];
-      setCourses(mock);
-      setLoading(false);
-    }, 1200);
-    return () => clearTimeout(timeout);
-  }, []);
-
-  // Drag‑and‑drop with SortableJS
-  React.useEffect(() => {
-    if (containerRef.current && !loading) {
-      const sortable = new Sortable(containerRef.current, {
-        animation: 200,
-        handle: ".drag-handle",
-        onEnd: (evt) => {
-          const updated = [...courses];
-          const [moved] = updated.splice(evt.oldIndex, 1);
-          updated.splice(evt.newIndex, 0, moved);
-          setCourses(updated);
-          toast(t('courses.reordered'));
-        },
-      });
-      return () => sortable.destroy();
-    }
-  }, [containerRef.current, loading, courses]);
-
-  if (loading) {
-    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="bg-card dark:bg-dark-card p-4 rounded animate-pulse space-y-2">
-            <div className="h-4 bg-skeleton w-3/4"></div>
-            <div className="h-3 bg-skeleton w-1/2"></div>
-            <div className="h-3 bg-skeleton w-1/3"></div>
+      <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm hover:shadow-md transition">
+        <img src="https://picsum.photos/seed/ui/400/200" class="rounded-t-lg" alt="">
+        <div class="p-4 space-y-2">
+          <h4 class="font-semibold">UX Research Fundamentals</h4>
+          <p class="text-sm text-secondary">Instructor: Nina Patel</p>
+          <div class="h-2 bg-slate-200 rounded">
+            <div class="h-full bg-accent rounded" style="width: 88%"></div>
           </div>
-        ))}
+        </div>
       </div>
-    );
+
+      <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm hover:shadow-md transition">
+        <img src="https://picsum.photos/seed/ai/400/200" class="rounded-t-lg" alt="">
+        <div class="p-4 space-y-2">
+          <h4 class="font-semibold">AI for Designers</h4>
+          <p class="text-sm text-secondary">Instructor: Daniel Brooks</p>
+          <div class="h-2 bg-slate-200 rounded">
+            <div class="h-full bg-accent rounded" style="width: 63%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Students -->
+  <section class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
+    <h3 class="font-semibold mb-4">Student Management</h3>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="text-secondary text-left">
+          <tr>
+            <th class="py-2">Name</th>
+            <th>Status</th>
+            <th>Enrolled Course</th>
+            <th>Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-t">
+            <td class="py-2">Sarah Lee</td>
+            <td><span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">Active</span></td>
+            <td>Advanced React</td>
+            <td>68%</td>
+          </tr>
+          <tr class="border-t">
+            <td class="py-2">Michael Chen</td>
+            <td><span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">Active</span></td>
+            <td>UX Research Fundamentals</td>
+            <td>100%</td>
+          </tr>
+          <tr class="border-t">
+            <td class="py-2">Emily Rogers</td>
+            <td><span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700">Pending</span></td>
+            <td>Node.js Mastery</td>
+            <td>12%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  function toggleDarkMode() {
+    document.documentElement.classList.toggle('dark');
   }
 
-  return (
-    <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" ref={containerRef} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      {courses.map(course => (
-        <div key={course.id} className="bg-card dark:bg-dark-card rounded-lg shadow overflow-hidden">
-          <div className="h-40 bg-gradient-to-r from-primary to-accent flex items-center justify-center text-white font-semibold text-xl">
-            {course.title.split(' ')[0]}
-          </div>
-          <div className="p-4">
-            <h3 className="font-semibold text-lg mb-1">{course.title}</h3>
-            <p className="text-sm text-secondary mb-1">{t('courses.instructor')}: {course.instructor}</p>
-            <p className="text-sm text-secondary mb-2">{t('courses.duration')}: {course.duration}</p>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm">{t('courses.progress')}: {course.progress}%</span>
-              <span className="drag-handle cursor-move text-gray-500"><i className="fas fa-grip-lines"></i></span>
-            </div>
-            <div className="w-full bg-border rounded-full h-2 overflow-hidden mb-3">
-              <div className="bg-accent h-full" style={{ width: `${course.progress}%` }}></div>
-            </div>
-            <div className="flex space-x-2">
-              <button className="btn-outline flex-1">{t('courses.details')}</button>
-              <button className="btn-primary flex-1">{t('courses.continue')}</button>
-            </div>
-          </div>
-        </div>
-      ))}
-    </motion.div>
-  );
-}
-
-/* --------------------------------------------------------------------
-   Student Management – table, pagination (infinite scroll), export
---------------------------------------------------------------------- */
-function Students() {
-  const t = i18next.t;
-  const [students, setStudents] = React.useState([]);
-  const [page, setPage] = React.useState(1);
-  const [hasMore, setHasMore] = React.useState(true);
-  const [loading, setLoading] = React.useState(false);
-  const sentinelRef = React.useRef(null);
-
-  /** Mock API – returns 20 items per page */
-  const fetchStudents = (p) => new Promise(resolve => {
-    setTimeout(() => {
-      const batch = Array.from({ length: 20 }, (_, i) => {
-        const id = (p - 1) * 20 + i + 1;
-        return {
-          id,
-          name: `Student ${id}`,
-          email: `student${id}@example.com`,
-          courses: Math.floor(Math.random() * 5),
-          status: ["active", "pending", "inactive"][Math.floor(Math.random() * 3)],
-          lastActive: new Date(Date.now() - Math.random() * 1e10).toLocaleString(),
-        };
-      });
-      resolve(batch);
-    }, 800);
-  });
-
-  // Load initial & subsequent pages
-  React.useEffect(() => {
-    if (!hasMore) return;
-    setLoading(true);
-    fetchStudents(page).then(batch => {
-      setStudents(prev => [...prev, ...batch]);
-      setLoading(false);
-      if (batch.length < 20) setHasMore(false);
-    });
-  }, [page]);
-
-  // IntersectionObserver for infinite scroll
-  React.useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && !loading && hasMore) setPage(p => p + 1);
-    }, { rootMargin: "200px" });
-    if (sentinelRef.current) observer.observe(sentinelRef.current);
-    return () => { if (sentinelRef.current) observer.unobserve(sentinelRef.current); };
-  }, [sentinelRef.current, loading, hasMore]);
-
-  const exportCSV = () => {
-    const headers = ["ID", "Name", "Email", "Courses", "Status", "Last Active"];
-    const rows = students.map(s => [s.id, s.name, s.email, s.courses, s.status, s.lastActive]);
-    const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "students.csv";
-    a.click();
-    URL.revokeObjectURL(url);
-    toast(t('students.exported'));
-  };
-
-  return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold">{t('students.title')}</h2>
-        <button onClick={exportCSV} className="btn-primary flex items-center"><i className="fas fa-download mr-2"></i>{t('students.export')}</button>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-card dark:bg-dark-card rounded-lg shadow-md">
-          <thead className="bg-gray-100 dark:bg-gray-700">
-            <tr>
-              <th className="px-4 py-2 text-left">{t('students.id')}</th>
-              <th className="px-4 py-2 text-left">{t('students.name')}</th>
-              <th className="px-4 py-2 text-left">{t('students.email')}</th>
-              <th className="px-4 py-2 text-left">{t('students.courses')}</th>
-              <th className="px-4 py-2 text-left">{t('students.status')}</th>
-              <th className="px-4 py-2 text-left">{t('students.lastActive')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {students.map(st => (
-              <tr key={st.id} className="border-t border-border dark:border-dark-border">
-                <td className="px-4 py-2">{st.id}</td>
-                <td className="px-4 py-2">{st.name}</td>
-                <td className="px-4 py-2">{st.email}</td>
-                <td className="px-4 py-2">{st.courses}</td>
-                <td className="px-4 py-2">
-                  <span className={`status-badge ${st.status === "active" ? "status-active" : st.status === "pending" ? "status-pending" : "status-inactive"}`}>{st.status}</span>
-                </td>
-                <td className="px-4 py-2">{st.lastActive}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {loading && (
-          <div className="p-4 text-center"><div className="skeleton h-4 w-32 mx-auto"></div></div>
-        )}
-        <div ref={sentinelRef}></div>
-        {!hasMore && <div className="p-4 text-center text-sm text-secondary">{t('students.noMore')}</div>}
-      </div>
-    </div>
-  );
-}
-
-/* --------------------------------------------------------------------
-   Content Management – rich text editor, drag‑and‑drop uploads, gallery
---------------------------------------------------------------------- */
-function Content() {
-  const t = i18next.t;
-  const editorRef = React.useRef(null);
-  const [files, setFiles] = React.useState([]);
-
-  React.useEffect(() => {
-    if (editorRef.current) {
-      new Quill(editorRef.current, {
-        theme: "snow",
-        placeholder: t('content.editorPlaceholder')
-      });
+  new Chart(document.getElementById('enrollmentChart'), {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      datasets: [{
+        data: [320, 410, 580, 640, 720, 860],
+        borderColor: '#2563eb',
+        backgroundColor: 'rgba(37,99,235,0.15)',
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { grid: { color: '#e5e7eb' } },
+        x: { grid: { display: false } }
+      }
     }
-  }, []);
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const dropped = Array.from(e.dataTransfer.files);
-    setFiles(prev => [...prev, ...dropped]);
-  };
-
-  const handleSelect = (e) => {
-    const selected = Array.from(e.target.files);
-    setFiles(prev => [...prev, ...selected]);
-  };
-
-  return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-semibold">{t('content.title')}</h2>
-      <div className="bg-card dark:bg-dark-card p-4 rounded-lg shadow">
-        <div ref={editorRef} className="h-64"></div>
-      </div>
-      <div
-        className="border-2 border-dashed border-border dark:border-dark-border rounded-lg p-6 text-center hover:border-primary transition-colors"
-        onDragOver={e => e.preventDefault()}
-        onDrop={handleDrop}
-      >
-        <i className="fas fa-cloud-upload-alt fa-2x mb-2 text-primary"></i>
-        <p>{t('content.dragDrop')}</p>
-        <p className="text-sm text-secondary">{t('content.or')}</p>
-        <input type="file" multiple onChange={handleSelect} className="mt-2" />
-      </div>
-      {files.length > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {files.map((file, i) => (
-            <div key={i} className="bg-card dark:bg-dark-card p-2 rounded-lg text-center">
-              <i className="fas fa-file-alt fa-2x text-secondary mb-2"></i>
-              <p className="text-sm truncate">{file.name}</p>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* --------------------------------------------------------------------
-   Analytics – simple branded chart
---------------------------------------------------------------------- */
-function Analytics() {
-  const t = i18next.t;
-  const chartRef = React.useRef(null);
-  React.useEffect(() => {
-    if (!chartRef.current) return;
-    const ctx = chartRef.current.getContext('2d');
-    const chart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["Course A", "Course B", "Course C", "Course D"],
-        datasets: [{
-          label: t('analytics.averageScore'),
-          data: [4.5, 4.2, 4.8, 4.1],
-          backgroundColor: "#10b981",
-          borderRadius: 4,
-        }],
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { beginAtZero: true, grid: { color: "rgba(0,0,0,0.05)" }, ticks: { color: "#64748b" } },
-          x: { grid: { display: false }, ticks: { color: "#64748b" } },
-        },
-        plugins: {
-          tooltip: {
-            backgroundColor: "rgba(30,41,59,0.9)",
-            titleColor: "#f8fafc",
-            bodyColor: "#f8fafc",
-            borderRadius: 8,
-            displayColors: false,
-          },
-        },
-      },
-    });
-    return () => chart.destroy();
-  }, []);
-  return (
-    <div className="bg-card dark:bg-dark-card p-4 rounded-lg shadow">
-      <h2 className="text-2xl font-semibold mb-4">{t('analytics.title')}</h2>
-      <canvas ref={chartRef}></canvas>
-    </div>
-  );
-}
-
-/* --------------------------------------------------------------------
-   Main App – routing between sections, dark mode persistence, i18n init
---------------------------------------------------------------------- */
-function App() {
-  const [section, setSection] = React.useState('dashboard');
-  const [dark, setDark] = React.useState(() => localStorage.getItem('dark') === 'true');
-  const [lang, setLang] = React.useState(() => localStorage.getItem('lang') || 'en');
-  const [notifCount, setNotifCount] = React.useState(0);
-  const user = { name: "John Doe", role: "admin" }; // mock user
-
-  // Initialize i18next
-  React.useEffect(() => {
-    i18next.init({
-      lng: lang,
-      resources: { en: { translation: en }, es: { translation: es } },
-    });
-  }, [lang]);
-
-  // Dark mode class toggle
-  React.useEffect(() => {
-    const html = document.documentElement;
-    if (dark) html.classList.add('dark');
-    else html.classList.remove('dark');
-    localStorage.setItem('dark', dark);
-  }, [dark]);
-
-  // Simulated real‑time notifications
-  React.useEffect(() => {
-    const timer = setInterval(() => setNotifCount(c => c + 1), 20000);
-    return () => clearInterval(timer);
-  }, []);
-
-  return (
-    <UserContext.Provider value={user}>
-      <div className="flex min-h-screen bg-background text-text">
-        <Sidebar current={section} setSection={setSection} />
-        <div className="flex-1 flex flex-col">
-          <TopBar
-            darkMode={dark}
-            toggleDark={() => setDark(!dark)}
-            language={lang}
-            setLanguage={lng => {
-              setLang(lng);
-              localStorage.setItem('lang', lng);
-            }}
-            notifications={notifCount}
-          />
-          <main className="flex-1 overflow-auto p-4">
-            <ErrorBoundary>
-              {section === 'dashboard' && <Dashboard />}
-              {section === 'courses' && <Courses />}
-              {section === 'students' && <Students />}
-              {section === 'content' && <Content />}
-              {section === 'analytics' && <Analytics />}
-              {/* Settings, Profile etc. could be added here */}
-            </ErrorBoundary>
-          </main>
-        </div>
-      </div>
-    </UserContext.Provider>
-  );
-}
-
-/* --------------------------------------------------------------------
-   Render app
---------------------------------------------------------------------- */
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  });
 </script>
+
 </body>
 </html>
