@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduManage | Modern Course Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --accent: #10b981;
+            --background: #f8fafc;
+            --text: #1e293b;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --dark-bg: #0f172a;
+            --dark-card: #1e293b;
+            --dark-text: #f1f5f9;
+            --dark-border: #334155;
+            --spacing-unit: 8px;
+            --transition: all 300ms ease-in-out;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        body.dark-mode {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: linear-gradient(180deg, var(--primary), #1d4ed8);
+            color: white;
+            padding: calc(var(--spacing-unit) * 3);
+            position: fixed;
+            width: 240px;
+            height: 100vh;
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: calc(var(--spacing-unit) * 4);
+        }
+
+        .logo i {
+            font-size: 28px;
+            margin-right: 12px;
+        }
+
+        .logo h1 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: calc(var(--spacing-unit) * 1.5);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            grid-column: 2;
+            padding: calc(var(--spacing-unit) * 3);
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: calc(var(--spacing-unit) * 4);
+            padding-bottom: calc(var(--spacing-unit) * 2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-bar {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 2);
+        }
+
+        .notification-btn, .theme-toggle {
+            position: relative;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--secondary);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .notification-btn:hover, .theme-toggle:hover {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 1.5);
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--secondary);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: calc(var(--spacing-unit) * 2);
+            margin-bottom: calc(var(--spacing-unit) * 4);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: calc(var(--spacing-unit) * 3);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode .card {
+            background: var(--dark-card);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .metric-card {
+            grid-column: span 3;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: calc(var(--spacing-unit) * 2);
+        }
+
+        .metric-title {
+            font-size: 14px;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .icon-blue {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+
+        .icon-green {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent);
+        }
+
+        .icon-orange {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .icon-red {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .metric-change {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .positive {
+            color: var(--success);
+        }
+
+        .negative {
+            color: var(--danger);
+        }
+
+        .chart-container {
+            grid-column: span 8;
+            height: 320px;
+        }
+
+        .recent-activity {
+            grid-column: span 4;
+            height: 320px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: calc(var(--spacing-unit) * 3);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .view-all {
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .view-all:hover {
+            text-decoration: underline;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            padding: calc(var(--spacing-unit) * 1.5) 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: var(--secondary);
+        }
+
+        /* Courses Section */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: calc(var(--spacing-unit) * 3);
+            margin-bottom: calc(var(--spacing-unit) * 4);
+        }
+
+        .course-card {
+            border-radius: 8px;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .course-image {
+            height: 160px;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .course-content {
+            padding: calc(var(--spacing-unit) * 2);
+            background: var(--card-bg);
+        }
+
+        body.dark-mode .course-content {
+            background: var(--dark-card);
+        }
+
+        .course-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--secondary);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+        }
+
+        .progress-container {
+            margin-bottom: calc(var(--spacing-unit) * 2);
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        .course-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        body.dark-mode .btn-outline {
+            border-color: var(--dark-border);
+            color: var(--dark-text);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* Students Table */
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body.dark-mode .students-table {
+            background: var(--dark-card);
+        }
+
+        .students-table th {
+            background: rgba(37, 99, 235, 0.05);
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--secondary);
+        }
+
+        body.dark-mode .students-table th {
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .students-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        body.dark-mode .students-table td {
+            border-bottom-color: var(--dark-border);
+        }
+
+        .students-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-inactive {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--secondary);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: calc(var(--spacing-unit) * 4);
+            gap: 8px;
+        }
+
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .page-btn {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+            color: var(--dark-text);
+        }
+
+        .page-btn:hover, .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: calc(var(--spacing-unit) * 2);
+            }
+            
+            .main-content {
+                grid-column: 1;
+                padding: calc(var(--spacing-unit) * 2);
+            }
+            
+            .metric-card {
+                grid-column: span 6;
+            }
+            
+            .chart-container, .recent-activity {
+                grid-column: span 12;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .search-bar {
+                width: 100%;
+            }
+            
+            .metric-card {
+                grid-column: span 12;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+        }
+
+        /* Dark Mode Overrides */
+        body.dark-mode .search-bar input {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+            color: var(--dark-text);
+        }
+
+        body.dark-mode .notification-btn:hover, 
+        body.dark-mode .theme-toggle:hover {
+            background: rgba(37, 99, 235, 0.2);
+        }
+
+        body.dark-mode .students-table tr:nth-child(even) {
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+            height: 20px;
+        }
+
+        body.dark-mode .skeleton {
+            background: linear-gradient(90deg, #2d3748 25%, #4a5568 50%, #2d3748 75%);
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>EduManage</h1>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-book"></i>
+                        <span>Courses</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Students</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Content</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="topbar">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search courses, students, content...">
+                </div>
+                <div class="user-actions">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="user-profile">
+                        <div class="avatar">JD</div>
+                        <div class="user-info">
+                            <span class="user-name">John Doe</span>
+                            <span class="user-role">Administrator</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Metric Cards -->
+                <div class="card metric-card fade-in">
+                    <div class="metric-header">
+                        <div class="metric-title">Total Courses</div>
+                        <div class="metric-icon icon-blue">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                    </div>
+                    <div class="metric-value">42</div>
+                    <div class="metric-change positive">
+                        <i class="fas fa-arrow-up"></i> 12% from last month
+                    </div>
+                </div>
+
+                <div class="card metric-card fade-in">
+                    <div class="metric-header">
+                        <div class="metric-title">Active Students</div>
+                        <div class="metric-icon icon-green">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                    </div>
+                    <div class="metric-value">1,248</div>
+                    <div class="metric-change positive">
+                        <i class="fas fa-arrow-up"></i> 8% from last month
+                    </div>
+                </div>
+
+                <div class="card metric-card fade-in">
+                    <div class="metric-header">
+                        <div class="metric-title">Completion Rate</div>
+                        <div class="metric-icon icon-orange">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                    </div>
+                    <div class="metric-value">78%</div>
+                    <div class="metric-change negative">
+                        <i class="fas fa-arrow-down"></i> 3% from last month
+                    </div>
+                </div>
+
+                <div class="card metric-card fade-in">
+                    <div class="metric-header">
+                        <div class="metric-title">Avg. Rating</div>
+                        <div class="metric-icon icon-red">
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="metric-value">4.7</div>
+                    <div class="metric-change positive">
+                        <i class="fas fa-arrow-up"></i> 0.2 from last month
+                    </div>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="card chart-container fade-in">
+                    <div class="section-header">
+                        <h2 class="section-title">Enrollment Trends</h2>
+                        <a href="#" class="view-all">View Report</a>
+                    </div>
+                    <canvas id="enrollmentChart"></canvas>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card recent-activity fade-in">
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Activity</h2>
+                        <a href="#" class="view-all">View All</a>
+                    </div>
+                    <ul class="activity-list">
+                        <li class="activity-item">
+                            <div class="activity-avatar">AS</div>
+                            <div class="activity-content">
+                                <div class="activity-text"><strong>Alex Smith</strong> completed "Advanced React"</div>
+                                <div class="activity-time">2 hours ago</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-avatar">MJ</div>
+                            <div class="activity-content">
+                                <div class="activity-text"><strong>Maria Johnson</strong> enrolled in "Data Science Fundamentals"</div>
+                                <div class="activity-time">5 hours ago</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-avatar">TP</div>
+                            <div class="activity-content">
+                                <div class="activity-text"><strong>Thomas Parker</strong> submitted assignment for "UX Design"</div>
+                                <div class="activity-time">Yesterday</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-avatar">EK</div>
+                            <div class="activity-content">
+                                <div class="activity-text"><strong>Emma King</strong> started "Machine Learning Basics"</div>
+                                <div class="activity-time">2 days ago</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Courses Section -->
+            <div class="section-header">
+                <h2 class="section-title">Popular Courses</h2>
+                <a href="#" class="view-all">View All Courses</a>
+            </div>
+            <div class="courses-grid">
+                <div class="card course-card fade-in">
+                    <div class="course-image">UI/UX Design</div>
+                    <div class="course-content">
+                        <h3 class="course-title">Advanced UI/UX Design Principles</h3>
+                        <div class="course-meta">
+                            <span>Instructor: Sarah Johnson</span>
+                            <span>Duration: 8 weeks</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="btn btn-outline">Details</button>
+                            <button class="btn btn-primary">Continue</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card course-card fade-in">
+                    <div class="course-image">Web Dev</div>
+                    <div class="course-content">
+                        <h3 class="course-title">Full Stack Web Development</h3>
+                        <div class="course-meta">
+                            <span>Instructor: Michael Chen</span>
+                            <span>Duration: 12 weeks</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span>42%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 42%"></div>
+                            </div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="btn btn-outline">Details</button>
+                            <button class="btn btn-primary">Continue</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card course-card fade-in">
+                    <div class="course-image">Data Sci</div>
+                    <div class="course-content">
+                        <h3 class="course-title">Data Science with Python</h3>
+                        <div class="course-meta">
+                            <span>Instructor: David Wilson</span>
+                            <span>Duration: 10 weeks</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span>90%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="btn btn-outline">Details</button>
+                            <button class="btn btn-primary">Continue</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Students Section -->
+            <div class="section-header">
+                <h2 class="section-title">Student Management</h2>
+                <div>
+                    <button class="btn btn-outline" style="margin-right: 8px;">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Student
+                    </button>
+                </div>
+            </div>
+            <div class="card fade-in">
+                <table class="students-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Email</th>
+                            <th>Enrolled Courses</th>
+                            <th>Status</th>
+                            <th>Last Active</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Alex Smith</td>
+                            <td>alex.smith@example.com</td>
+                            <td>3</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>Today, 10:30 AM</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 4px 8px; font-size: 12px;">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Maria Johnson</td>
+                            <td>maria.j@example.com</td>
+                            <td>2</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>Yesterday, 3:15 PM</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 4px 8px; font-size: 12px;">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Thomas Parker</td>
+                            <td>t.parker@example.com</td>
+                            <td>1</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td>2 days ago</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 4px 8px; font-size: 12px;">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Emma King</td>
+                            <td>e.king@example.com</td>
+                            <td>4</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>Today, 9:45 AM</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 4px 8px; font-size: 12px;">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>James Wright</td>
+                            <td>j.wright@example.com</td>
+                            <td>0</td>
+                            <td><span class="status-badge status-inactive">Inactive</span></td>
+                            <td>1 week ago</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 4px 8px; font-size: 12px;">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn"><i class="fas fa-ellipsis-h"></i></button>
+                    <button class="page-btn">10</button>
+                    <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Chart.js
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('enrollmentChart').getContext('2d');
+            const enrollmentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'New Enrollments',
+                        data: [120, 190, 150, 220, 180, 250, 210, 280, 230, 300, 270, 320],
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#f8fafc',
+                            cornerRadius: 8,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                color: '#64748b'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Dark Mode Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const icon = themeToggle.querySelector('i');
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+
+            // Add fade-in animation to cards
+            const cards = document.querySelectorAll('.fade-in');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>
